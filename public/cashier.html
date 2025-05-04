@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Queue System - Cashier Interface</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      padding: 0;
+      background-color: #f0f2f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+    }
+    
+    .navbar {
+      background-color: #1a73e8;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .navbar-brand {
+      font-weight: 600;
+      color: white;
+    }
+    
+    .main-container {
+      padding: 30px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .window-card {
+      margin-bottom: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      border: none;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .window-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+    }
+    
+    .window-header {
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      color: white;
+      padding: 20px;
+      border-radius: 15px 15px 0 0;
+    }
+    
+    .window-body {
+      padding: 30px;
+      background-color: white;
+    }
+    
+    .btn-call {
+      font-size: 1.2rem;
+      padding: 12px 25px;
+      border-radius: 50px;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-call:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(40, 167, 69, 0.4);
+    }
+    
+    .btn-call-again {
+      font-size: 1.2rem;
+      padding: 12px 25px;
+      border-radius: 50px;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-call-again:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(13, 110, 253, 0.4);
+    }
+    
+    .btn-call-specific {
+      font-size: 1.2rem;
+      padding: 12px 25px;
+      border-radius: 50px;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-call-specific:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(23, 162, 184, 0.4);
+    }
+    
+    .btn-danger {
+      border-radius: 50px;
+      box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(220, 53, 69, 0.4);
+    }
+    
+    .btn-warning {
+      border-radius: 50px;
+      box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+      transition: all 0.3s ease;
+      color: #212529;
+      font-weight: 600;
+    }
+    
+    .btn-warning:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(255, 193, 7, 0.4);
+    }
+    
+    .register-card {
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      border: none;
+      transition: all 0.3s ease;
+    }
+    
+    .register-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+    }
+    
+    .card-title {
+      font-weight: 600;
+      color: #1a73e8;
+    }
+    
+    .form-control {
+      border-radius: 50px 0 0 50px;
+      padding: 12px 20px;
+      border: 2px solid #e0e0e0;
+    }
+    
+    .form-control:focus {
+      box-shadow: none;
+      border-color: #1a73e8;
+    }
+    
+    .btn-primary {
+      border-radius: 0 50px 50px 0;
+      padding: 12px 25px;
+      background-color: #1a73e8;
+      border-color: #1a73e8;
+    }
+    
+    .current-number-display {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #1a73e8;
+      background-color: #f8f9fa;
+      border-radius: 15px;
+      padding: 15px 30px;
+      display: inline-block;
+      margin-bottom: 20px;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .window-status {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #28a745;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .btn-icon {
+      margin-right: 10px;
+    }
+    
+    .pulse-animation {
+      animation: pulse 1s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    
+    .notification-bell {
+      z-index: 9999;
+    }
+    
+    .bell-animation {
+      animation: bell-ring 1s ease infinite;
+    }
+    
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    
+    @keyframes bell-ring {
+      0% { transform: rotate(0); }
+      5% { transform: rotate(15deg); }
+      10% { transform: rotate(-15deg); }
+      15% { transform: rotate(15deg); }
+      20% { transform: rotate(-15deg); }
+      25% { transform: rotate(0); }
+      100% { transform: rotate(0); }
+    }
+    
+    .reset-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .modal-content {
+      border-radius: 15px;
+      border: none;
+    }
+    
+    .modal-header {
+      border-radius: 15px 15px 0 0;
+      border-bottom: none;
+    }
+    
+    .modal-header.warning {
+      background: linear-gradient(135deg, #ff9800, #ff5722);
+      color: white;
+    }
+    
+    .modal-footer {
+      border-top: none;
+    }
+
+    .btn-group-vertical .btn {
+      margin-bottom: 10px;
+    }
+    
+    .reset-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+    
+    .reset-buttons .btn {
+      flex: 1;
+      margin: 0 5px;
+    }
+    
+    .stats-card {
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      border: none;
+      transition: all 0.3s ease;
+    }
+    
+    .stats-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    
+    .stats-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1a73e8;
+    }
+    
+    .stats-label {
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+  </style>
+</head>
+<body>
+  <!-- Add audio element for notification sound -->
+  <audio id="notificationSound" src="https://cdn.freesound.org/previews/220/220170_4100837-lq.mp3" preload="auto"></audio>
+  
+  <nav class="navbar navbar-dark mb-4">
+    <div class="container">
+      <span class="navbar-brand mb-0 h1">
+        <i class="fas fa-headset me-2"></i>M-Agri Queue Management System
+      </span>
+      <div class="navbar-nav ms-auto d-flex flex-row">
+        <a class="nav-link px-2 active" href="/cashier.html"><i class="fas fa-cash-register"></i> Cashier</a>
+        <a class="nav-link px-2" href="/display.html"><i class="fas fa-tv"></i> Display</a>
+        <a class="nav-link px-2" href="/encoder.html"><i class="fas fa-ticket-alt"></i> Encoder</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main-container">
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="card stats-card">
+          <div class="card-body text-center p-3">
+            <div class="stats-value" id="totalNumbers">0</div>
+            <div class="stats-label">Total Numbers</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card stats-card">
+          <div class="card-body text-center p-3">
+            <div class="stats-value" id="waitingNumbers">0</div>
+            <div class="stats-label">Waiting</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card stats-card">
+          <div class="card-body text-center p-3">
+            <div class="stats-value" id="calledNumbers">0</div>
+            <div class="stats-label">Called</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row mb-4" id="registerSection">
+      <div class="col-md-8 offset-md-2">
+        <div class="card register-card">
+          <div class="card-body p-4">
+            <h5 class="card-title mb-3">
+              <i class="fas fa-user-plus me-2"></i>Register Your Window
+            </h5>
+            <div class="input-group mb-3">
+              <input type="number" id="windowId" class="form-control" placeholder="Enter Window Number" min="1">
+              <button class="btn btn-primary" id="registerBtn">
+                <i class="fas fa-sign-in-alt btn-icon"></i>Register
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="activeWindow" class="row d-none">
+      <div class="col-md-8 offset-md-2">
+        <div class="card window-card position-relative">
+          <span class="window-status">Active</span>
+          <div class="window-header">
+            <h3 class="text-center mb-0">
+              <i class="fas fa-desktop me-2"></i>Window <span id="windowNumber"></span>
+            </h3>
+          </div>
+          <div class="window-body text-center">
+            <div class="mb-4">
+              <p class="text-muted mb-2">Current Queue Number</p>
+              <div class="current-number-display" id="currentNumber">0</div>
+            </div>
+            <div class="btn-group-vertical w-75 mb-4">
+              <button id="callNextBtn" class="btn btn-success btn-call mb-3">
+                <i class="fas fa-bell btn-icon"></i>Call Next Customer
+              </button>
+              <button id="callAgainBtn" class="btn btn-primary btn-call-again mb-3">
+                <i class="fas fa-volume-up btn-icon"></i>Call Again
+              </button>
+              <button id="callSpecificBtn" class="btn btn-info btn-call-specific">
+                <i class="fas fa-hashtag btn-icon"></i>Call Specific Number
+              </button>
+            </div>
+            <div class="reset-section">
+              <div class="reset-buttons">
+                <button id="resetBtn" class="btn btn-warning">
+                  <i class="fas fa-redo-alt btn-icon"></i>Reset Queue
+                </button>
+                <button id="resetAllBtn" class="btn btn-danger">
+                  <i class="fas fa-exclamation-triangle btn-icon"></i>Reset All
+                </button>
+              </div>
+              <button id="closeWindowBtn" class="btn btn-danger">
+                <i class="fas fa-sign-out-alt btn-icon"></i>Close Window
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="resetModal" tabindex="-1" aria-labelledby="resetModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header warning">
+          <h5 class="modal-title" id="resetModalLabel">
+            <i class="fas fa-redo-alt me-2"></i>Reset Queue Number
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to reset the queue number?</p>
+          <div class="mb-3">
+            <label for="resetNumberInput" class="form-label">Reset to number:</label>
+            <input type="number" class="form-control" id="resetNumberInput" value="0" min="0">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-warning" id="confirmResetBtn">Reset Queue</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="callSpecificModal" tabindex="-1" aria-labelledby="callSpecificModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header" style="background: linear-gradient(135deg, #17a2b8, #0c7b93); color: white;">
+          <h5 class="modal-title" id="callSpecificModalLabel">
+            <i class="fas fa-hashtag me-2"></i>Call Specific Number
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Enter the physical number that was distributed to the customer:</p>
+          <div class="mb-3">
+            <label for="specificNumberInput" class="form-label">Physical Number:</label>
+            <input type="number" class="form-control" id="specificNumberInput" min="1" value="1">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-info" id="confirmCallSpecificBtn">Call This Number</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let myWindowId = null;
+    let currentQueueNumber = 0;
+    let audioInitialized = false;
+    
+    const windowIdInput = document.getElementById('windowId');
+    const registerBtn = document.getElementById('registerBtn');
+    const activeWindow = document.getElementById('activeWindow');
+    const registerSection = document.getElementById('registerSection');
+    const windowNumber = document.getElementById('windowNumber');
+    const currentNumberDisplay = document.getElementById('currentNumber');
+    const callNextBtn = document.getElementById('callNextBtn');
+    const callAgainBtn = document.getElementById('callAgainBtn');
+    const callSpecificBtn = document.getElementById('callSpecificBtn');
+    const closeWindowBtn = document.getElementById('closeWindowBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const resetAllBtn = document.getElementById('resetAllBtn');
+    const resetNumberInput = document.getElementById('resetNumberInput');
+    const confirmResetBtn = document.getElementById('confirmResetBtn');
+    const specificNumberInput = document.getElementById('specificNumberInput');
+    const confirmCallSpecificBtn = document.getElementById('confirmCallSpecificBtn');
+    const totalNumbersDisplay = document.getElementById('totalNumbers');
+    const waitingNumbersDisplay = document.getElementById('waitingNumbers');
+    const calledNumbersDisplay = document.getElementById('calledNumbers');
+    
+    const resetModal = new bootstrap.Modal(document.getElementById('resetModal'));
+    const callSpecificModal = new bootstrap.Modal(document.getElementById('callSpecificModal'));
+    
+    function isSpeechSynthesisReady() {
+      return new Promise((resolve) => {
+        if (window.speechSynthesis && window.speechSynthesis.getVoices().length > 0) {
+          resolve(true);
+        } else {
+          window.speechSynthesis.onvoiceschanged = () => {
+            resolve(true);
+          };
+          setTimeout(() => {
+            resolve(false);
+          }, 3000);
+        }
+      });
+    }
+    
+    function speak(text) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.volume = 1;
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+      
+      const voices = window.speechSynthesis.getVoices();
+      const englishVoice = voices.find(voice => 
+        voice.lang.includes('en') && voice.name.includes('Female')
+      );
+      
+      if (englishVoice) {
+        utterance.voice = englishVoice;
+      }
+      
+      window.speechSynthesis.speak(utterance);
+    }
+    
+    if (window.speechSynthesis) {
+      if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = function() {
+          window.speechSynthesis.getVoices();
+        };
+      }
+    } else {
+      console.error("Speech synthesis not supported in this browser");
+    }
+    
+    function createToast(message, bgClass = 'bg-info') {
+      const toastDiv = document.createElement('div');
+      toastDiv.className = `toast align-items-center text-white ${bgClass} border-0`;
+      toastDiv.setAttribute('role', 'alert');
+      toastDiv.setAttribute('aria-live', 'assertive');
+      toastDiv.setAttribute('aria-atomic', 'true');
+      toastDiv.innerHTML = `
+        <div class="d-flex">
+          <div class="toast-body">
+            ${message}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      `;
+      
+      document.getElementById('toastContainer').appendChild(toastDiv);
+      const toast = new bootstrap.Toast(toastDiv, { autohide: true, delay: 5000 });
+      toast.show();
+      
+      toastDiv.addEventListener('hidden.bs.toast', function() {
+        toastDiv.remove();
+      });
+    }
+    
+    function pulseNumber() {
+      currentNumberDisplay.classList.add('pulse-animation');
+      setTimeout(() => {
+        currentNumberDisplay.classList.remove('pulse-animation');
+      }, 1000);
+    }
+    
+    function updateStats(data) {
+      if (data) {
+        totalNumbersDisplay.textContent = data.total || 0;
+        waitingNumbersDisplay.textContent = data.waiting || 0;
+        calledNumbersDisplay.textContent = data.called || 0;
+      }
+    }
+    
+    registerBtn.addEventListener('click', () => {
+      const windowId = parseInt(windowIdInput.value);
+      if (windowId && windowId > 0) {
+        myWindowId = windowId;
+        socket.emit('registerWindow', windowId);
+        
+        windowNumber.textContent = windowId;
+        activeWindow.classList.remove('d-none');
+        registerSection.classList.add('d-none');
+        
+        socket.emit('requestQueueStats');
+      } else {
+        alert('Please enter a valid window number');
+      }
+    });
+    
+    callNextBtn.addEventListener('click', async function() {
+      if (myWindowId) {
+        this.disabled = true;
+        
+        try {
+          const isTTSReady = await isSpeechSynthesisReady();
+          if (!isTTSReady) {
+            console.warn('Speech synthesis may not be fully loaded, but proceeding anyway');
+          }
+          
+          socket.emit('callNext', { windowId: myWindowId });
+          pulseNumber();
+        } catch (error) {
+          console.error('Error while preparing to call next customer:', error);
+        } finally {
+          setTimeout(() => {
+            this.disabled = false;
+          }, 1000);
+        }
+      }
+    });
+    
+    callAgainBtn.addEventListener('click', async function() {
+      if (myWindowId && currentQueueNumber > 0) {
+        this.disabled = true;
+        
+        try {
+          const isTTSReady = await isSpeechSynthesisReady();
+          if (!isTTSReady) {
+            console.warn('Speech synthesis may not be fully loaded, but proceeding anyway');
+          }
+          
+          socket.emit('callAgain', { 
+            windowId: myWindowId, 
+            number: currentQueueNumber 
+          });
+          
+          pulseNumber();
+        } catch (error) {
+          console.error('Error while preparing to call again:', error);
+        } finally {
+          setTimeout(() => {
+            this.disabled = false;
+          }, 1000);
+        }
+      } else if (currentQueueNumber <= 0) {
+        alert('No customer to call again. Please call next customer first.');
+      }
+    });
+    
+    callSpecificBtn.addEventListener('click', () => {
+      callSpecificModal.show();
+    });
+    
+    confirmCallSpecificBtn.addEventListener('click', async function() {
+      const specificNumber = parseInt(specificNumberInput.value);
+      if (specificNumber && specificNumber > 0) {
+        this.disabled = true;
+        
+        try {
+          const isTTSReady = await isSpeechSynthesisReady();
+          if (!isTTSReady) {
+            console.warn('Speech synthesis may not be fully loaded, but proceeding anyway');
+          }
+          
+          socket.emit('callSpecific', { 
+            windowId: myWindowId, 
+            number: specificNumber 
+          });
+          
+          currentQueueNumber = specificNumber;
+          currentNumberDisplay.textContent = specificNumber;
+          pulseNumber();
+          callSpecificModal.hide();
+        } catch (error) {
+          console.error('Error while preparing to call specific number:', error);
+        } finally {
+          setTimeout(() => {
+            this.disabled = false;
+          }, 1000);
+        }
+      } else {
+        alert('Please enter a valid number (greater than 0)');
+      }
+    });
+    
+    resetBtn.addEventListener('click', () => {
+      resetModal.show();
+    });
+    
+    resetAllBtn.addEventListener('click', () => {
+      if (confirm('WARNING: This will reset ALL windows and set the queue number to 0. Continue?')) {
+        socket.emit('resetAllWindows', { 
+          newNumber: 0,
+          windowId: myWindowId
+        });
+        
+        currentQueueNumber = 0;
+        currentNumberDisplay.textContent = 0;
+      }
+    });
+    
+    confirmResetBtn.addEventListener('click', () => {
+      const resetNumber = parseInt(resetNumberInput.value);
+      if (resetNumber >= 0) {
+        socket.emit('resetQueue', { 
+          newNumber: resetNumber,
+          windowId: myWindowId
+        });
+        
+        currentQueueNumber = resetNumber;
+        currentNumberDisplay.textContent = resetNumber;
+        resetModal.hide();
+      } else {
+        alert('Please enter a valid number (0 or greater)');
+      }
+    });
+    
+    closeWindowBtn.addEventListener('click', () => {
+      if (myWindowId) {
+        socket.emit('closeWindow', myWindowId);
+        myWindowId = null;
+        
+        activeWindow.classList.add('d-none');
+        registerSection.classList.remove('d-none');
+        windowIdInput.value = '';
+      }
+    });
+    
+    socket.on('queueUpdate', (data) => {
+      currentQueueNumber = data.currentNumber;
+      currentNumberDisplay.textContent = currentQueueNumber;
+    });
+    
+    socket.on('customerCalled', (data) => {
+      currentQueueNumber = data.number;
+      currentNumberDisplay.textContent = currentQueueNumber;
+      
+      const announcement = `Number ${data.number} in Window ${data.windowId}`;
+      speak(announcement);
+    });
+    
+    socket.on('customerCalledAgain', (data) => {
+      if (data.windowId === myWindowId) {
+        currentQueueNumber = data.number;
+        currentNumberDisplay.textContent = currentQueueNumber;
+      }
+      
+      const announcement = `Number ${data.number} in Window ${data.windowId}`;
+      speak(announcement);
+    });
+    
+    socket.on('customerCalledSpecific', (data) => {
+      if (data.windowId === myWindowId) {
+        currentQueueNumber = data.number;
+        currentNumberDisplay.textContent = currentQueueNumber;
+      }
+      
+      const announcement = `Number ${data.number} in Window ${data.windowId}`;
+      speak(announcement);
+    });
+    
+    socket.on('queueReset', (data) => {
+      currentQueueNumber = data.newNumber;
+      currentNumberDisplay.textContent = currentQueueNumber;
+      
+      if (data.windowId === myWindowId) {
+        alert(`Queue has been reset to number ${data.newNumber}`);
+      } else {
+        const notification = `Queue has been reset to ${data.newNumber} by Window ${data.windowId}`;
+        createToast(notification, 'bg-info');
+      }
+    });
+    
+    socket.on('allWindowsReset', (data) => {
+      currentQueueNumber = data.newNumber;
+      currentNumberDisplay.textContent = currentQueueNumber;
+      
+      if (data.windowId === myWindowId) {
+        alert(`All windows have been reset and queue number set to 0`);
+      } else {
+        const notification = `All windows have been reset and queue number set to 0 by Window ${data.windowId}`;
+        createToast(notification, 'bg-danger');
+      }
+      
+      const announcement = `Attention please. All windows have been reset. The queue will now start from number zero.`;
+      speak(announcement);
+    });
+    
+    socket.on('queueStats', (data) => {
+      // Check if waiting count changed from 0 to a positive number
+      const oldWaitingCount = parseInt(waitingNumbersDisplay.textContent);
+      updateStats(data);
+      const newWaitingCount = parseInt(waitingNumbersDisplay.textContent);
+      
+      if (oldWaitingCount === 0 && newWaitingCount > 0) {
+        showWaitingNotification();
+      }
+      
+      previousWaitingCount = newWaitingCount;
+    });
+    
+    // Track previous waiting count to detect changes
+    let previousWaitingCount = 0;
+    
+    function showWaitingNotification() {
+  // Create a toast notification
+  createToast('New customer in waiting!', 'bg-primary');
+  
+  // Use speech synthesis instead of audio element
+  if ('speechSynthesis' in window) {
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    
+    // Create a new speech utterance
+    const utterance = new SpeechSynthesisUtterance('New customer in waiting');
+    
+    // Configure the utterance
+    utterance.volume = 1; // 0 to 1
+    utterance.rate = 0.9; // 0.1 to 10
+    utterance.pitch = 1; // 0 to 2
+    
+    // Get available voices and set a good one if available
+    const voices = window.speechSynthesis.getVoices();
+    // Try to find a good English voice
+    const englishVoice = voices.find(voice => 
+      voice.lang.includes('en') && voice.name.includes('Female')
+    );
+    
+    if (englishVoice) {
+      utterance.voice = englishVoice;
+    }
+    
+    // Speak the text
+    window.speechSynthesis.speak(utterance);
+    console.log('Voice notification played');
+  } else {
+    console.error("Speech synthesis not supported in this browser");
+  }
+  
+  // Add a visual indicator (bell icon with animation)
+  const bellIndicator = document.createElement('div');
+  bellIndicator.className = 'position-fixed top-0 end-0 p-3 notification-bell';
+  bellIndicator.innerHTML = `
+    <div class="bg-primary text-white p-3 rounded-circle shadow-lg bell-animation">
+      <i class="fas fa-bell fa-2x"></i>
+    </div>
+  `;
+  
+  document.body.appendChild(bellIndicator);
+  
+  // Remove the bell after 3 seconds
+  setTimeout(() => {
+    bellIndicator.classList.add('fade-out');
+    setTimeout(() => {
+      bellIndicator.remove();
+    }, 500);
+  }, 3000);
+}
+  
+  // Improved audio initialization function
+  function initializeAudio() {
+    const notificationSound = document.getElementById('notificationSound');
+    
+    // Create a user gesture context
+    const tempBtn = document.createElement('button');
+    tempBtn.style.display = 'none';
+    document.body.appendChild(tempBtn);
+    
+    // Simulate a click to create user gesture context
+    tempBtn.click();
+    
+    // Try to initialize audio
+    notificationSound.volume = 0.1;
+    const playPromise = notificationSound.play();
+    
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        // Success - pause it immediately
+        notificationSound.pause();
+        notificationSound.currentTime = 0;
+        notificationSound.volume = 1; // Reset volume to full
+        audioInitialized = true;
+        console.log('Audio context initialized successfully');
+      }).catch(error => {
+        console.warn('Audio initialization failed:', error);
+        showEnableSoundButton();
+      });
+    }
+    
+    // Remove the temporary button
+    document.body.removeChild(tempBtn);
+  }
+  
+  // Function to show the enable sound button
+  function showEnableSoundButton() {
+    // Remove any existing button first
+    const existingBtn = document.getElementById('enableSoundBtn');
+    if (existingBtn) {
+      existingBtn.remove();
+    }
+    
+    // Create a button to enable sound
+    const enableSoundBtn = document.createElement('button');
+    enableSoundBtn.id = 'enableSoundBtn';
+    enableSoundBtn.className = 'btn btn-sm btn-primary position-fixed bottom-0 end-0 m-3';
+    enableSoundBtn.innerHTML = '<i class="fas fa-volume-up me-2"></i>Enable Sound Notifications';
+    enableSoundBtn.style.zIndex = '9999';
+    
+    enableSoundBtn.addEventListener('click', function() {
+      const notificationSound = document.getElementById('notificationSound');
+      
+      // Try playing a short sound
+      notificationSound.currentTime = 0;
+      notificationSound.volume = 0.5;
+      
+      notificationSound.play().then(() => {
+        // Success - let it play for a moment then pause
+        setTimeout(() => {
+          notificationSound.pause();
+          notificationSound.currentTime = 0;
+          notificationSound.volume = 1;
+        }, 500);
+        
+        audioInitialized = true;
+        createToast('Sound notifications enabled!', 'bg-success');
+        this.remove();
+      }).catch(err => {
+        createToast('Failed to enable sound. Please check browser settings.', 'bg-danger');
+      });
+    });
+    
+    document.body.appendChild(enableSoundBtn);
+  }
+  
+  // Update the DOMContentLoaded event handler
+  document.addEventListener('DOMContentLoaded', function() {
+    // Try to initialize audio right away
+    initializeAudio();
+    
+    // Also add a visible button for enabling sound
+    showEnableSoundButton();
+  });
+    
+    // Listen for new customer encoded events
+    socket.on('newCustomerEncoded', (data) => {
+      // Check if this is the first customer in the WAITING queue (waiting was 0)
+      const waitingCount = parseInt(document.getElementById('waitingNumbers').textContent);
+      
+      if (previousWaitingCount === 0 && waitingCount > 0) {
+        showWaitingNotification();
+      }
+      
+      previousWaitingCount = waitingCount;
+    });
+    
+    // Listen for batch customers encoded events
+    socket.on('batchCustomersEncoded', (data) => {
+      // Check if this is the first batch of customers in the WAITING queue (waiting was 0)
+      const waitingCount = parseInt(document.getElementById('waitingNumbers').textContent);
+      
+      if (previousWaitingCount === 0 && waitingCount > 0) {
+        showWaitingNotification();
+      }
+      
+      previousWaitingCount = waitingCount;
+    });
+    
+    windowIdInput.addEventListener('keyup', (event) => {
+      if (event.key === 'Enter') {
+        registerBtn.click();
+      }
+    });
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+      if (myWindowId) {
+        socket.emit('requestQueueStats');
+      }
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+    });
+    
+    // Initialize audio on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get the audio element
+      const notificationSound = document.getElementById('notificationSound');
+      
+      // Set volume to 0 initially
+      notificationSound.volume = 0;
+      
+      // Try to play and immediately pause to initialize audio context
+      notificationSound.play().then(() => {
+        notificationSound.pause();
+        notificationSound.currentTime = 0;
+        notificationSound.volume = 1; // Reset volume to full
+        audioInitialized = true;
+        console.log('Audio context initialized successfully');
+      }).catch(error => {
+        console.warn('Audio autoplay prevented on page load:', error);
+        
+        // Create a button to enable sound
+        const enableSoundBtn = document.createElement('button');
+        enableSoundBtn.className = 'btn btn-sm btn-primary position-fixed bottom-0 end-0 m-3';
+        enableSoundBtn.innerHTML = '<i class="fas fa-volume-up me-2"></i>Enable Sound Notifications';
+        enableSoundBtn.style.zIndex = '9999';
+        
+        enableSoundBtn.addEventListener('click', function() {
+          notificationSound.play().then(() => {
+            notificationSound.pause();
+            notificationSound.currentTime = 0;
+            audioInitialized = true;
+            createToast('Sound notifications enabled!', 'bg-success');
+            this.remove();
+          }).catch(err => {
+            createToast('Failed to enable sound. Please check browser settings.', 'bg-danger');
+          });
+        });
+        
+        document.body.appendChild(enableSoundBtn);
+      });
+    });
+  </script>
+</body>
+</html>

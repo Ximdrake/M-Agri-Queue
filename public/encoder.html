@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Queue System - Encoder Interface</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      padding: 0;
+      background-color: #f0f2f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+    }
+    
+    .navbar {
+      background-color: #1a73e8;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .navbar-brand {
+      font-weight: 600;
+      color: white;
+    }
+    
+    .main-container {
+      padding: 30px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .encoder-card {
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      border: none;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .encoder-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+    }
+    
+    .card-header {
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      color: white;
+      padding: 20px;
+      border-radius: 15px 15px 0 0 !important;
+      border-bottom: none;
+    }
+    
+    .card-body {
+      padding: 30px;
+      background-color: white;
+    }
+    
+    .form-control {
+      border-radius: 50px;
+      padding: 12px 20px;
+      border: 2px solid #e0e0e0;
+    }
+    
+    .form-control:focus {
+      box-shadow: none;
+      border-color: #1a73e8;
+    }
+    
+    .btn-primary {
+      border-radius: 50px;
+      padding: 12px 25px;
+      background-color: #1a73e8;
+      border-color: #1a73e8;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(26, 115, 232, 0.4);
+    }
+    
+    .btn-danger {
+      border-radius: 50px;
+      box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(220, 53, 69, 0.4);
+    }
+    
+    .queue-list {
+      max-height: 400px;
+      overflow-y: auto;
+      border-radius: 10px;
+      border: 1px solid #e0e0e0;
+      background-color: #f8f9fa;
+    }
+    
+    .queue-item {
+      padding: 15px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .queue-item:last-child {
+      border-bottom: none;
+    }
+    
+    .queue-section-header {
+      background-color: #e9ecef;
+      padding: 8px 15px;
+      border-bottom: 1px solid #dee2e6;
+      border-top: 1px solid #dee2e6;
+    }
+    
+    .queue-section-header:first-child {
+      border-top: none;
+      border-radius: 10px 10px 0 0;
+    }
+    
+    .queue-number {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #1a73e8;
+    }
+    
+    .queue-status {
+      font-size: 0.9rem;
+      padding: 5px 10px;
+      border-radius: 50px;
+      font-weight: 600;
+    }
+    
+    .status-waiting {
+      background-color: #ffc107;
+      color: #212529;
+    }
+    
+    .status-called {
+      background-color: #28a745;
+      color: white;
+    }
+    
+    .status-completed {
+      background-color: #6c757d;
+      color: white;
+    }
+    
+    .btn-icon {
+      margin-right: 10px;
+    }
+    
+    .toast-container {
+      z-index: 1050;
+    }
+    
+    .pulse-animation {
+      animation: pulse 1s;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    
+    .stats-card {
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      border: none;
+    }
+    
+    .stats-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1a73e8;
+    }
+    
+    .stats-label {
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+    
+    .batch-input {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-dark mb-4">
+    <div class="container">
+      <span class="navbar-brand mb-0 h1">
+        <i class="fas fa-keyboard me-2"></i>M-Agri Queue Management System - Encoder
+      </span>
+      <div class="navbar-nav ms-auto d-flex flex-row">
+        <a class="nav-link px-2" href="/cashier.html"><i class="fas fa-cash-register"></i> Cashier</a>
+        <a class="nav-link px-2" href="/display.html"><i class="fas fa-tv"></i> Display</a>
+        <a class="nav-link px-2 active" href="/encoder.html"><i class="fas fa-ticket-alt"></i> Encoder</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main-container">
+    <!-- Toast container for notifications -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+    
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="card stats-card">
+          <div class="card-body text-center p-3">
+            <div class="stats-value" id="totalNumbers">0</div>
+            <div class="stats-label">Total Numbers</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card stats-card">
+          <div class="card-body text-center p-3">
+            <div class="stats-value" id="waitingNumbers">0</div>
+            <div class="stats-label">Waiting</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card stats-card">
+          <div class="card-body text-center p-3">
+            <div class="stats-value" id="calledNumbers">0</div>
+            <div class="stats-label">Called</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-5">
+        <div class="card encoder-card mb-4">
+          <div class="card-header">
+            <h4 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Add to Queue</h4>
+          </div>
+          <div class="card-body">
+            <form id="addNumberForm">
+              <div class="mb-3">
+                <label for="numberInput" class="form-label">Physical Number:</label>
+                <input type="number" class="form-control" id="numberInput" min="1" required>
+                <div class="form-text">Enter the number printed on the physical ticket.</div>
+              </div>
+              <div class="mb-3">
+                <label for="customerNameInput" class="form-label">Customer Name (Optional):</label>
+                <input type="text" class="form-control" id="customerNameInput" placeholder="e.g. John Doe">
+              </div>
+              <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-plus-circle btn-icon"></i>Add to Queue
+              </button>
+            </form>
+            
+            <div class="batch-input">
+              <h5 class="mb-3">Batch Add Numbers</h5>
+              <div class="mb-3">
+                <label for="startNumberInput" class="form-label">Start Number:</label>
+                <input type="number" class="form-control" id="startNumberInput" min="1">
+              </div>
+              <div class="mb-3">
+                <label for="endNumberInput" class="form-label">End Number:</label>
+                <input type="number" class="form-control" id="endNumberInput" min="1">
+              </div>
+              <button id="batchAddBtn" class="btn btn-primary w-100">
+                <i class="fas fa-list-ol btn-icon"></i>Add Batch
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-7">
+        <div class="card encoder-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="fas fa-list-alt me-2"></i>Queue List</h4>
+            <button id="clearQueueBtn" class="btn btn-danger btn-sm">
+              <i class="fas fa-trash-alt btn-icon"></i>Clear Queue
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" id="searchInput" placeholder="Search by number or name...">
+              <button class="btn btn-outline-secondary" type="button" id="searchBtn">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+            
+            <div class="queue-list" id="queueList">
+              <!-- Queue items will be added here dynamically -->
+              <div class="text-center p-4 text-muted" id="emptyQueueMessage">
+                <i class="fas fa-inbox fa-3x mb-3"></i>
+                <p>No numbers in queue</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="confirmationModalLabel">
+            <i class="fas fa-exclamation-triangle me-2"></i>Confirm Action
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="confirmationMessage">Are you sure you want to perform this action?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmActionBtn">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    
+    // Queue data
+    let queueData = [];
+    
+    // DOM elements
+    const numberInput = document.getElementById('numberInput');
+    const customerNameInput = document.getElementById('customerNameInput');
+    const addNumberForm = document.getElementById('addNumberForm');
+    const queueList = document.getElementById('queueList');
+    const emptyQueueMessage = document.getElementById('emptyQueueMessage');
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const clearQueueBtn = document.getElementById('clearQueueBtn');
+    const startNumberInput = document.getElementById('startNumberInput');
+    const endNumberInput = document.getElementById('endNumberInput');
+    const batchAddBtn = document.getElementById('batchAddBtn');
+    const totalNumbersDisplay = document.getElementById('totalNumbers');
+    const waitingNumbersDisplay = document.getElementById('waitingNumbers');
+    const calledNumbersDisplay = document.getElementById('calledNumbers');
+    
+    // Confirmation modal
+    const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+    const confirmationMessage = document.getElementById('confirmationMessage');
+    const confirmActionBtn = document.getElementById('confirmActionBtn');
+    
+    // Create toast notification
+    function createToast(message, bgClass = 'bg-info') {
+      const toastDiv = document.createElement('div');
+      toastDiv.className = `toast align-items-center text-white ${bgClass} border-0`;
+      toastDiv.setAttribute('role', 'alert');
+      toastDiv.setAttribute('aria-live', 'assertive');
+      toastDiv.setAttribute('aria-atomic', 'true');
+      toastDiv.innerHTML = `
+        <div class="d-flex">
+          <div class="toast-body">
+            ${message}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      `;
+      
+      document.getElementById('toastContainer').appendChild(toastDiv);
+      const toast = new bootstrap.Toast(toastDiv, { autohide: true, delay: 5000 });
+      toast.show();
+      
+      toastDiv.addEventListener('hidden.bs.toast', function() {
+        toastDiv.remove();
+      });
+    }
+    
+    // Update queue list display
+    function updateQueueList(filteredData = null) {
+      const dataToDisplay = filteredData || queueData;
+      
+      if (dataToDisplay.length === 0) {
+        emptyQueueMessage.style.display = 'block';
+        queueList.innerHTML = '';
+        return;
+      }
+      
+      emptyQueueMessage.style.display = 'none';
+      queueList.innerHTML = '';
+      
+      // Group queue items by status
+      const waitingItems = dataToDisplay.filter(item => item.status === 'waiting');
+      const calledItems = dataToDisplay.filter(item => item.status === 'called');
+      const completedItems = dataToDisplay.filter(item => item.status === 'completed');
+      
+      // Add waiting items
+      if (waitingItems.length > 0) {
+        const waitingHeader = document.createElement('div');
+        waitingHeader.className = 'queue-section-header';
+        waitingHeader.innerHTML = `
+          <h5 class="mb-2 mt-2"><i class="fas fa-clock me-2"></i>Waiting (${waitingItems.length})</h5>
+        `;
+        queueList.appendChild(waitingHeader);
+        
+        waitingItems.forEach((item) => {
+          const queueItem = document.createElement('div');
+          queueItem.className = 'queue-item';
+          
+          // Format time
+          const time = new Date(item.timestamp);
+          const timeString = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          
+          // For duplicate numbers, add a small indicator showing it's the nth occurrence
+          const sameNumberItems = waitingItems.filter(i => i.number === item.number);
+          const occurrenceIndex = sameNumberItems.findIndex(i => i.timestamp === item.timestamp);
+          const occurrenceIndicator = sameNumberItems.length > 1 ? 
+            `<span class="badge bg-secondary ms-2">#${occurrenceIndex + 1}</span>` : '';
+          
+          queueItem.innerHTML = `
+            <div>
+              <span class="queue-number">#${item.number}${occurrenceIndicator}</span>
+              ${item.customerName ? `<div class="text-muted">${item.customerName}</div>` : ''}
+              <div class="text-muted small">Added: ${timeString}</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <span class="queue-status status-waiting me-2">Waiting</span>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-success complete-btn" data-number="${item.number}" data-timestamp="${item.timestamp}">
+                  <i class="fas fa-check"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger remove-btn" data-number="${item.number}" data-timestamp="${item.timestamp}">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          `;
+          
+          queueList.appendChild(queueItem);
+        });
+      }
+      
+      // Add called items
+      if (calledItems.length > 0) {
+        const calledHeader = document.createElement('div');
+        calledHeader.className = 'queue-section-header';
+        calledHeader.innerHTML = `
+          <h5 class="mb-2 mt-3"><i class="fas fa-bell me-2"></i>Called (${calledItems.length})</h5>
+        `;
+        queueList.appendChild(calledHeader);
+        
+        calledItems.forEach((item) => {
+          const queueItem = document.createElement('div');
+          queueItem.className = 'queue-item';
+          
+          // Format time
+          const time = new Date(item.timestamp);
+          const timeString = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          
+          // For duplicate numbers, add a small indicator showing it's the nth occurrence
+          const sameNumberItems = calledItems.filter(i => i.number === item.number);
+          const occurrenceIndex = sameNumberItems.findIndex(i => i.timestamp === item.timestamp);
+          const occurrenceIndicator = sameNumberItems.length > 1 ? 
+            `<span class="badge bg-secondary ms-2">#${occurrenceIndex + 1}</span>` : '';
+          
+          queueItem.innerHTML = `
+            <div>
+              <span class="queue-number">#${item.number}${occurrenceIndicator}</span>
+              ${item.customerName ? `<div class="text-muted">${item.customerName}</div>` : ''}
+              <div class="text-muted small">Added: ${timeString}</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <span class="queue-status status-called me-2">Called</span>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-success complete-btn" data-number="${item.number}" data-timestamp="${item.timestamp}">
+                  <i class="fas fa-check"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger remove-btn" data-number="${item.number}" data-timestamp="${item.timestamp}">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          `;
+          
+          queueList.appendChild(queueItem);
+        });
+      }
+      
+      // Add completed items
+      if (completedItems.length > 0) {
+        const completedHeader = document.createElement('div');
+        completedHeader.className = 'queue-section-header';
+        completedHeader.innerHTML = `
+          <h5 class="mb-2 mt-3"><i class="fas fa-check-circle me-2"></i>Completed (${completedItems.length})</h5>
+        `;
+        queueList.appendChild(completedHeader);
+        
+        completedItems.forEach((item) => {
+          const queueItem = document.createElement('div');
+          queueItem.className = 'queue-item';
+          
+          // Format time
+          const time = new Date(item.timestamp);
+          const timeString = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          
+          // For duplicate numbers, add a small indicator showing it's the nth occurrence
+          const sameNumberItems = completedItems.filter(i => i.number === item.number);
+          const occurrenceIndex = sameNumberItems.findIndex(i => i.timestamp === item.timestamp);
+          const occurrenceIndicator = sameNumberItems.length > 1 ? 
+            `<span class="badge bg-secondary ms-2">#${occurrenceIndex + 1}</span>` : '';
+          
+          queueItem.innerHTML = `
+            <div>
+              <span class="queue-number">#${item.number}${occurrenceIndicator}</span>
+              ${item.customerName ? `<div class="text-muted">${item.customerName}</div>` : ''}
+              <div class="text-muted small">Added: ${timeString}</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <span class="queue-status status-completed me-2">Completed</span>
+              <button class="btn btn-sm btn-outline-danger remove-btn" data-number="${item.number}" data-timestamp="${item.timestamp}">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          `;
+          
+          queueList.appendChild(queueItem);
+        });
+      }
+      
+      // Add event listeners to remove and complete buttons
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const number = parseInt(this.getAttribute('data-number'));
+          const timestamp = parseInt(this.getAttribute('data-timestamp'));
+          removeFromQueue(number, timestamp);
+        });
+      });
+      
+      document.querySelectorAll('.complete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const number = parseInt(this.getAttribute('data-number'));
+          const timestamp = parseInt(this.getAttribute('data-timestamp'));
+          markAsCompleted(number, timestamp);
+        });
+      });
+    }
+    
+    // Update statistics
+    function updateStats() {
+      const total = queueData.length;
+      const waiting = queueData.filter(item => item.status === 'waiting').length;
+      const called = queueData.filter(item => item.status === 'called').length;
+      
+      totalNumbersDisplay.textContent = total;
+      waitingNumbersDisplay.textContent = waiting;
+      calledNumbersDisplay.textContent = called;
+    }
+    
+    // Add number to queue
+    function addToQueue(number, customerName = '') {
+      // We'll no longer check if the number already exists
+      // Instead, we'll always add it as a new transaction
+      
+      const newItem = {
+        number: number,
+        customerName: customerName,
+        status: 'waiting',
+        timestamp: Date.now()
+      };
+      
+      queueData.push(newItem);
+      
+      // Sort by number first, then by timestamp for same numbers
+      queueData.sort((a, b) => {
+        if (a.number === b.number) {
+          return a.timestamp - b.timestamp; // Sort by timestamp if numbers are the same
+        }
+        return a.number - b.number;
+      });
+      
+      // Emit to server
+      socket.emit('addToQueue', newItem);
+      
+      updateQueueList();
+      updateStats();
+      
+      createToast(`Number ${number} added to queue.`, 'bg-success');
+      return true;
+    }
+    
+    // Remove from queue
+    function removeFromQueue(number, timestamp) {
+      // Find the specific item by both number and timestamp
+      const index = queueData.findIndex(item => 
+        item.number.toString() === number.toString() && 
+        item.timestamp.toString() === timestamp.toString()
+      );
+      
+      if (index !== -1) {
+        // Remove the specific item
+        queueData.splice(index, 1);
+        
+        // Emit to server
+        socket.emit('removeFromQueue', { number, timestamp });
+        
+        updateQueueList();
+        updateStats();
+        
+        createToast(`Number ${number} removed from queue.`, 'bg-danger');
+      }
+    }
+    
+    // Clear queue
+    function clearQueue() {
+      confirmationMessage.textContent = 'Are you sure you want to clear the entire queue? This cannot be undone.';
+      
+      confirmActionBtn.onclick = function() {
+        queueData = [];
+        
+        // Emit to server
+        socket.emit('clearQueue');
+        
+        updateQueueList();
+        updateStats();
+        
+        confirmationModal.hide();
+        createToast('Queue has been cleared.', 'bg-danger');
+      };
+      
+      confirmationModal.show();
+    }
+    
+    // Search queue
+    function searchQueue() {
+      const searchTerm = searchInput.value.toLowerCase();
+      
+      if (!searchTerm) {
+        updateQueueList();
+        return;
+      }
+      
+      const filteredData = queueData.filter(item => {
+        const numberMatch = item.number.toString().includes(searchTerm);
+        const nameMatch = item.customerName && item.customerName.toLowerCase().includes(searchTerm);
+        return numberMatch || nameMatch;
+      });
+      
+      updateQueueList(filteredData);
+    }
+    
+    // Batch add numbers
+    function batchAddNumbers() {
+      const start = parseInt(startNumberInput.value);
+      const end = parseInt(endNumberInput.value);
+      
+      if (!start || !end || start > end) {
+        createToast('Please enter valid start and end numbers.', 'bg-warning');
+        return;
+      }
+      
+      if (end - start > 100) {
+        confirmationMessage.textContent = `You are about to add ${end - start + 1} numbers to the queue. Continue?`;
+        
+        confirmActionBtn.onclick = function() {
+          processBatchAdd(start, end);
+          confirmationModal.hide();
+        };
+        
+        confirmationModal.show();
+      } else {
+        processBatchAdd(start, end);
+      }
+    }
+    
+    function processBatchAdd(start, end) {
+      let addedCount = 0;
+      
+      for (let i = start; i <= end; i++) {
+        if (addToQueue(i)) {
+          addedCount++;
+        }
+      }
+      
+      createToast(`Added ${addedCount} numbers to the queue.`, 'bg-success');
+      startNumberInput.value = '';
+      endNumberInput.value = '';
+    }
+    
+    // Event listeners
+    addNumberForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const number = parseInt(numberInput.value);
+      const customerName = customerNameInput.value.trim();
+      
+      if (number && number > 0) {
+        if (addToQueue(number, customerName)) {
+          numberInput.value = '';
+          customerNameInput.value = '';
+          numberInput.focus();
+        }
+      } else {
+        createToast('Please enter a valid number.', 'bg-warning');
+      }
+    });
+    
+    searchBtn.addEventListener('click', searchQueue);
+    
+    searchInput.addEventListener('keyup', function(e) {
+      if (e.key === 'Enter') {
+        searchQueue();
+      } else if (e.key === 'Escape') {
+        this.value = '';
+        updateQueueList();
+      } else {
+        // Debounce search for better performance
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(searchQueue, 300);
+      }
+    });
+    
+    clearQueueBtn.addEventListener('click', clearQueue);
+    
+    batchAddBtn.addEventListener('click', batchAddNumbers);
+    
+    // Mark as completed
+    function markAsCompleted(number, timestamp) {
+      // Find the specific item by both number and timestamp
+      const item = queueData.find(item => 
+        item.number.toString() === number.toString() && 
+        item.timestamp.toString() === timestamp.toString()
+      );
+      
+      if (item) {
+        item.status = 'completed';
+        
+        // Emit to server
+        socket.emit('updateQueueItem', item);
+        
+        updateQueueList();
+        updateStats();
+        
+        createToast(`Number ${number} marked as completed.`, 'bg-success');
+      }
+    }
+    
+    // Socket events
+    socket.on('connect', () => {
+      console.log('Connected to server');
+      // Request initial queue data
+      socket.emit('requestQueueData');
+    });
+    
+    socket.on('queueData', (data) => {
+      queueData = data;
+      updateQueueList();
+      updateStats();
+    });
+    
+    socket.on('queueUpdate', (data) => {
+      // Update the current number in the queue
+      // If there are multiple instances of the same number, update the oldest one first
+      const matchingItems = queueData.filter(item => item.number === data.currentNumber && item.status === 'waiting');
+      
+      if (matchingItems.length > 0) {
+        // Sort by timestamp to get the oldest one
+        matchingItems.sort((a, b) => a.timestamp - b.timestamp);
+        const oldestItem = matchingItems[0];
+        
+        // Find the index of this item in the main queue
+        const index = queueData.findIndex(item => 
+          item.number === oldestItem.number && item.timestamp === oldestItem.timestamp);
+        
+        if (index !== -1) {
+          queueData[index].status = 'called';
+          updateQueueList();
+          updateStats();
+        }
+      }
+    });
+    
+    socket.on('customerCalled', (data) => {
+      // Update the called number in the queue
+      // If there are multiple instances of the same number, update the oldest one first
+      const matchingItems = queueData.filter(item => item.number === data.number && item.status === 'waiting');
+      
+      if (matchingItems.length > 0) {
+        // Sort by timestamp to get the oldest one
+        matchingItems.sort((a, b) => a.timestamp - b.timestamp);
+        const oldestItem = matchingItems[0];
+        
+        // Find the index of this item in the main queue
+        const index = queueData.findIndex(item => 
+          item.number === oldestItem.number && item.timestamp === oldestItem.timestamp);
+        
+        if (index !== -1) {
+          queueData[index].status = 'called';
+          
+          // Highlight the called item
+          updateQueueList();
+          updateStats();
+          
+          const calledItem = document.querySelector(`.queue-item:nth-child(${index + 1})`);
+          if (calledItem) {
+            calledItem.classList.add('pulse-animation');
+            setTimeout(() => {
+              calledItem.classList.remove('pulse-animation');
+            }, 1000);
+          }
+          
+          createToast(`Number ${data.number} called at Window ${data.windowId}.`, 'bg-success');
+        }
+      }
+    });
+    
+    socket.on('customerCalledAgain', (data) => {
+      createToast(`Number ${data.number} called again at Window ${data.windowId}.`, 'bg-info');
+    });
+    
+    socket.on('customerCalledSpecific', (data) => {
+      // Update the called number in the queue
+      const index = queueData.findIndex(item => item.number === data.number);
+      
+      if (index !== -1) {
+        queueData[index].status = 'called';
+        updateQueueList();
+        updateStats();
+        createToast(`Number ${data.number} called at Window ${data.windowId}.`, 'bg-success');
+      } else {
+        // If the number wasn't in the queue, add it as already called
+        const newItem = {
+          number: data.number,
+          customerName: '',
+          status: 'called',
+          timestamp: Date.now()
+        };
+        
+        queueData.push(newItem);
+        queueData.sort((a, b) => a.number - b.number);
+        
+        updateQueueList();
+        updateStats();
+        createToast(`Number ${data.number} called at Window ${data.windowId} (added to queue).`, 'bg-success');
+      }
+    });
+    
+    socket.on('updateQueueItem', (data) => {
+      // Update an item in the queue
+      const index = queueData.findIndex(item => item.number === data.number);
+      
+      if (index !== -1) {
+        queueData[index] = data;
+        updateQueueList();
+        updateStats();
+      }
+    });
+    
+    socket.on('queueReset', (data) => {
+      createToast(`Queue has been reset to number ${data.newNumber} by Window ${data.windowId}.`, 'bg-warning');
+    });
+    
+    socket.on('allWindowsReset', (data) => {
+      // Mark all as completed
+      queueData.forEach(item => {
+        item.status = 'completed';
+      });
+      
+      updateQueueList();
+      updateStats();
+      
+      createToast(`All windows have been reset by Window ${data.windowId}.`, 'bg-danger');
+    });
+    
+    socket.on('queueItemReturned', (data) => {
+      // Update the returned item in the queue
+      // If timestamp is provided, use it to find the exact item
+      if (data.timestamp) {
+        const index = queueData.findIndex(item => 
+          item.number === data.number && item.timestamp === data.timestamp);
+        
+        if (index !== -1) {
+          queueData[index].status = 'waiting';
+          updateQueueList();
+          updateStats();
+          createToast(`Number ${data.number} has been returned to the waiting queue.`, 'bg-info');
+        }
+      } else {
+        // Legacy behavior - find the first matching number
+        const index = queueData.findIndex(item => item.number === data.number);
+        
+        if (index !== -1) {
+          queueData[index].status = 'waiting';
+          updateQueueList();
+          updateStats();
+          createToast(`Number ${data.number} has been returned to the waiting queue.`, 'bg-info');
+        }
+      }
+    });
+    
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+      createToast('Disconnected from server. Trying to reconnect...', 'bg-danger');
+    });
+  </script>
+</body>
+</html></qodoArtifact>
